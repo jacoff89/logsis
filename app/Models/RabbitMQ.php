@@ -8,9 +8,14 @@ use Illuminate\Support\Facades\DB;
 
 class RabbitMQ
 {
-    public function send($message)
+    public function send(string $message): void
     {
-        $connection = new AMQPStreamConnection('77.232.135.231', 5672, 'admin', 'deyshW5f');
+        $connection = new AMQPStreamConnection(
+            env('RABBITMQ_HOST', '127.0.0.1'),
+            env('RABBITMQ_PORT', '5672'),
+            env('RABBITMQ_LOGIN', 'guest'),
+            env('RABBITMQ_PASSWORD', 'guest')
+        );
         $channel = $connection->channel();
 
         $channel->queue_declare('queue1', false, false, false, false);
@@ -19,15 +24,21 @@ class RabbitMQ
         $msg = new AMQPMessage($message);
         $channel->basic_publish($msg, '', 'queue1');
 
-        echo ' [x] Sent '.$msg->body."\n<br />";
+        if(env('APP_DEBUG'))
+            app('log')->debug($msg->body);
 
         $channel->close();
         $connection->close();
     }
 
-    public function receive()
+    public function receive(): void
     {
-        $connection = new AMQPStreamConnection('77.232.135.231', 5672, 'admin', 'deyshW5f');
+        $connection = new AMQPStreamConnection(
+            env('RABBITMQ_HOST', '127.0.0.1'),
+            env('RABBITMQ_PORT', '5672'),
+            env('RABBITMQ_LOGIN', 'guest'),
+            env('RABBITMQ_PASSWORD', 'guest')
+        );
         $channel = $connection->channel();
 
         $channel->queue_declare('queue1', false, false, false, false);
@@ -41,10 +52,12 @@ class RabbitMQ
             $date = $data->date;
             $controllerName = $data->controllerName;
             $executionTime = $data->executionTime;
+            $methodName = $data->methodName;
 
-            DB::insert('insert into execution_time_log (controller_name, execution_time, date) values (?, ?, ?)', [$controllerName, $executionTime, $date]);
+            DB::insert('insert into execution_time_log (controller_name, method_name, execution_time, date) values (?, ?, ?, ?)', [$controllerName, $methodName, $executionTime, $date]);
 
-            echo ' [x] Сообщение: ', $msg->body, "\n";
+            if(env('APP_DEBUG'))
+                echo ' [x] Сообщение: ', $msg->body, "\n";
         };
 
         $channel->basic_consume('queue1', '', false, true, false, false, $callback);

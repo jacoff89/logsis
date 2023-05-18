@@ -24,13 +24,21 @@ class MeasureResponseTime
         if (defined('LARAVEL_START') and $request instanceof Request) {
 
             $today = date("Y-m-d H:i:s");
-            $controllerName = app('request')->route()->getAction()['controller'];
-            $executionTime = microtime(true) - LARAVEL_START;
-            $executionTimeRound = round($executionTime, 2);
+            $controller = app('request')->route()->getAction()['controller'];
 
-            //app('log')->debug($res);
+            $controllerArr = explode('@', $controller);
+            $controllerName = $controllerArr[0];
+            $methodName = $controllerArr[1];
 
-            $sendArray = ['date' => $today, 'controllerName' => $controllerName, 'executionTime' => $executionTimeRound];
+            $executionTime = round(microtime(true) - LARAVEL_START, 2);
+
+            $sendArray = [
+                'date' => $today,
+                'methodName' => $methodName,
+                'controllerName' => $controllerName,
+                'executionTime' => $executionTime
+            ];
+
             $sendMessage = json_encode($sendArray);
 
             $rabbitMQ = new RabbitMQ();
