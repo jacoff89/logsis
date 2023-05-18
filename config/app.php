@@ -56,6 +56,8 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
+    'rabbit_mq_queue' => env('RABBIT_MQ_QUEUE', 'queue1'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

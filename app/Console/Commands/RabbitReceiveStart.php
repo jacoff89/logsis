@@ -12,7 +12,7 @@ class RabbitReceiveStart extends Command
      *
      * @var string
      */
-    protected $signature = 'rabbit-receive:start';
+    protected $signature = 'rabbit-receive:start {queue_name}';
 
     /**
      * The console command description.
@@ -38,7 +38,9 @@ class RabbitReceiveStart extends Command
      */
     public function handle()
     {
-        $rabbitMQ = new RabbitMQ();
+        $queue_name = $this->argument('queue_name');
+
+        $rabbitMQ = new RabbitMQ($queue_name);
         $rabbitMQ->receive();
     }
 

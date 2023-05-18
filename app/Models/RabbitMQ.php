@@ -8,41 +8,40 @@ use Illuminate\Support\Facades\DB;
 
 class RabbitMQ
 {
-    public function send(string $message): void
+    private $channel;
+
+    private $queue_name;
+
+    public function __construct(string $queue_name)
     {
+        $this->queue_name = $queue_name;
+
         $connection = new AMQPStreamConnection(
             env('RABBITMQ_HOST', '127.0.0.1'),
             env('RABBITMQ_PORT', '5672'),
             env('RABBITMQ_LOGIN', 'guest'),
             env('RABBITMQ_PASSWORD', 'guest')
         );
-        $channel = $connection->channel();
 
-        $channel->queue_declare('queue1', false, false, false, false);
+        $this->channel = $connection->channel();
 
+        $this->channel->queue_declare($queue_name, false, false, false, false);
+    }
 
+    public function send(string $message): void
+    {
         $msg = new AMQPMessage($message);
-        $channel->basic_publish($msg, '', 'queue1');
+        $this->channel->basic_publish($msg, '', 'queue1');
 
         if (env('APP_DEBUG'))
             app('log')->debug($msg->body);
 
-        $channel->close();
+        $this->channel->close();
         $connection->close();
     }
 
     public function receive(): void
     {
-        $connection = new AMQPStreamConnection(
-            env('RABBITMQ_HOST', '127.0.0.1'),
-            env('RABBITMQ_PORT', '5672'),
-            env('RABBITMQ_LOGIN', 'guest'),
-            env('RABBITMQ_PASSWORD', 'guest')
-        );
-        $channel = $connection->channel();
-
-        $channel->queue_declare('queue1', false, false, false, false);
-
         echo " [*] RabbitMQ запущен. Ожидается прием сообщений. Для выхода нажмите CTRL+C\n";
 
         $callback = function ($msg) {
@@ -59,10 +58,10 @@ class RabbitMQ
                 echo ' [x] Сообщение: ', $msg->body, "\n";
         };
 
-        $channel->basic_consume('queue1', '', false, true, false, false, $callback);
+        $this->channel->basic_consume($this->queue_name, '', false, true, false, false, $callback);
 
-        while (count($channel->callbacks)) {
-            $channel->wait();
+        while (count($this->channel->callbacks)) {
+            $this->channel->wait();
         }
     }
 }

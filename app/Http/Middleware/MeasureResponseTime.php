@@ -41,7 +41,7 @@ class MeasureResponseTime
 
             $send_message = json_encode($send_array);
 
-            $rabbit_MQ = new RabbitMQ();
+            $rabbit_MQ = new RabbitMQ(env('RABBIT_MQ_QUEUE_NAME'));
             $rabbit_MQ->send($send_message);
 
         }
