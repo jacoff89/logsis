@@ -10,13 +10,13 @@ class RabbitMQ
 {
     public function send($message)
     {
-        $connection = new AMQPStreamConnection('192.168.XXX.XXX', 5672, 'guest', 'guest');
+        $connection = new AMQPStreamConnection('77.232.135.231', 5672, 'admin', 'deyshW5f');
         $channel = $connection->channel();
 
         $channel->queue_declare('queue1', false, false, false, false);
 
 
-        $msg = new AMQPMessage('Hello World!'.rand(1, 1000));
+        $msg = new AMQPMessage($message);
         $channel->basic_publish($msg, '', 'queue1');
 
         echo ' [x] Sent '.$msg->body."\n<br />";
@@ -27,18 +27,24 @@ class RabbitMQ
 
     public function receive()
     {
-        $connection = new AMQPStreamConnection('192.168.XXX.XXX', 5672, 'guest', 'guest');
+        $connection = new AMQPStreamConnection('77.232.135.231', 5672, 'admin', 'deyshW5f');
         $channel = $connection->channel();
 
         $channel->queue_declare('queue1', false, false, false, false);
 
-        echo " [*] Waiting for messages. To exit press CTRL+C\n";
+        echo " [*] RabbitMQ запущен. Ожидается прием сообщений. Для выхода нажмите CTRL+C\n";
 
         $callback = function ($msg)
         {
-            DB::insert('insert into users (controller_name, execution_time, date) values (?, ?, ?)', [1, 'Marc', '1']);
+            $data = json_decode($msg->body);
 
-            echo ' [x] Received ', $msg->body, "\n";
+            $date = $data->date;
+            $controllerName = $data->controllerName;
+            $executionTime = $data->executionTime;
+
+            DB::insert('insert into execution_time_log (controller_name, execution_time, date) values (?, ?, ?)', [$controllerName, $executionTime, $date]);
+
+            echo ' [x] Сообщение: ', $msg->body, "\n";
         };
 
         $channel->basic_consume('queue1', '', false, true, false, false, $callback);
