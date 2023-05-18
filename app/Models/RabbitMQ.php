@@ -58,9 +58,10 @@ class RabbitMQ
             if (env('APP_DEBUG')) {
                 echo ' [x] Сообщение: ', $msg->body, "\n";
             }
+            $msg->ack();
         };
 
-        $this->channel->basic_consume($this->queue_name, '', false, true, false, false, $callback);
+        $this->channel->basic_consume($this->queue_name, '', false, false, false, false, $callback);
 
         while (count($this->channel->callbacks)) {
             $this->channel->wait();
