@@ -31,10 +31,11 @@ class RabbitMQ
     public function send(string $message): void
     {
         $msg = new AMQPMessage($message);
-        $this->channel->basic_publish($msg, '', 'queue1');
+        $this->channel->basic_publish($msg, '', $this->queue_name);
 
-        if (env('APP_DEBUG'))
+        if (env('APP_DEBUG')) {
             app('log')->debug($msg->body);
+        }
 
         $this->channel->close();
         $connection->close();
@@ -54,8 +55,9 @@ class RabbitMQ
 
             DB::insert('insert into execution_time_log (controller_name, method_name, execution_time, date) values (?, ?, ?, ?)', [$controller_name, $method_name, $execution_time, $date]);
 
-            if (env('APP_DEBUG'))
+            if (env('APP_DEBUG')) {
                 echo ' [x] Сообщение: ', $msg->body, "\n";
+            }
         };
 
         $this->channel->basic_consume($this->queue_name, '', false, true, false, false, $callback);
