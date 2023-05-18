@@ -45,7 +45,7 @@ class RabbitMQ
     {
         echo " [*] RabbitMQ запущен. Ожидается прием сообщений. Для выхода нажмите CTRL+C\n";
 
-        $callback = function ($msg) {
+        $callback = function (object $msg) {
             $data = json_decode($msg->body);
 
             $date = $data->date;
