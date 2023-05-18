@@ -24,7 +24,7 @@ class RabbitMQ
         $msg = new AMQPMessage($message);
         $channel->basic_publish($msg, '', 'queue1');
 
-        if(env('APP_DEBUG'))
+        if (env('APP_DEBUG'))
             app('log')->debug($msg->body);
 
         $channel->close();
@@ -45,25 +45,23 @@ class RabbitMQ
 
         echo " [*] RabbitMQ запущен. Ожидается прием сообщений. Для выхода нажмите CTRL+C\n";
 
-        $callback = function ($msg)
-        {
+        $callback = function ($msg) {
             $data = json_decode($msg->body);
 
             $date = $data->date;
-            $controllerName = $data->controllerName;
-            $executionTime = $data->executionTime;
-            $methodName = $data->methodName;
+            $controller_name = $data->controller_name;
+            $execution_time = $data->execution_time;
+            $method_name = $data->method_name;
 
-            DB::insert('insert into execution_time_log (controller_name, method_name, execution_time, date) values (?, ?, ?, ?)', [$controllerName, $methodName, $executionTime, $date]);
+            DB::insert('insert into execution_time_log (controller_name, method_name, execution_time, date) values (?, ?, ?, ?)', [$controller_name, $method_name, $execution_time, $date]);
 
-            if(env('APP_DEBUG'))
+            if (env('APP_DEBUG'))
                 echo ' [x] Сообщение: ', $msg->body, "\n";
         };
 
         $channel->basic_consume('queue1', '', false, true, false, false, $callback);
 
-        while (count($channel->callbacks))
-        {
+        while (count($channel->callbacks)) {
             $channel->wait();
         }
     }

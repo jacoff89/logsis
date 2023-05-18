@@ -16,7 +16,7 @@ class MeasureResponseTime
 
     /**
      *
-     * @param  Illuminate\Http\Request $request
+     * @param Illuminate\Http\Request $request
      * @return void
      */
     public function terminate($request)
@@ -26,23 +26,23 @@ class MeasureResponseTime
             $today = date("Y-m-d H:i:s");
             $controller = app('request')->route()->getAction()['controller'];
 
-            $controllerArr = explode('@', $controller);
-            $controllerName = $controllerArr[0];
-            $methodName = $controllerArr[1];
+            $controller_arr = explode('@', $controller);
+            $controller_name = $controller_arr[0];
+            $method_name = $controller_arr[1];
 
-            $executionTime = round(microtime(true) - LARAVEL_START, 2);
+            $execution_time = round(microtime(true) - LARAVEL_START, 2);
 
-            $sendArray = [
+            $send_array = [
                 'date' => $today,
-                'methodName' => $methodName,
-                'controllerName' => $controllerName,
-                'executionTime' => $executionTime
+                'method_name' => $method_name,
+                'controller_name' => $controller_name,
+                'execution_time' => $execution_time
             ];
 
-            $sendMessage = json_encode($sendArray);
+            $send_message = json_encode($send_array);
 
-            $rabbitMQ = new RabbitMQ();
-            $rabbitMQ->send($sendMessage);
+            $rabbit_MQ = new RabbitMQ();
+            $rabbit_MQ->send($send_message);
 
         }
     }
