@@ -16,6 +16,7 @@
 
 - в локальной среде с корня проекта запустить команду "php artisan rabbit-receive:start имя_очереди"
 - в prod среде создать системный юнит с запуском вышеуказанной команды и добавить его в автозагрузку linux
+- для создания таблицы execution_time_log в БД необходимо запустить команду php artisan create-table:execution_time_log
 
 имя_очереди в консоли должно соответствовать env RABBIT_MQ_QUEUE_NAME
 
