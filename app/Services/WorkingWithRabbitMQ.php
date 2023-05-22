@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace App\Services;
 
+use App\Models\ExecutionTimeLog;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use Illuminate\Support\Facades\DB;
 
-class RabbitMQ
+class WorkingWithRabbitMQ
 {
     private $channel;
 
@@ -38,22 +39,31 @@ class RabbitMQ
         }
 
         $this->channel->close();
-        $connection->close();
+        //$connection->close();
     }
 
     public function receive(): void
     {
-        echo " [*] RabbitMQ запущен. Ожидается прием сообщений. Для выхода нажмите CTRL+C\n";
+        echo " [*] WorkingWithRabbitMQ запущен. Ожидается прием сообщений. Для выхода нажмите CTRL+C\n";
 
         $callback = function (object $msg) {
             $data = json_decode($msg->body);
 
-            $date = $data->date;
+            $create_date = $data->create_date;
             $controller_name = $data->controller_name;
             $execution_time = $data->execution_time;
             $method_name = $data->method_name;
+            $ip_address = $data->ip_address;
 
-            DB::insert('insert into execution_time_log (controller_name, method_name, execution_time, date) values (?, ?, ?, ?)', [$controller_name, $method_name, $execution_time, $date]);
+            $log = new ExecutionTimeLog;
+
+            $log->controller_name = $controller_name;
+            $log->method_name = $method_name;
+            $log->execution_time = $execution_time;
+            $log->create_date = $create_date;
+            $log->ip_address = $ip_address;
+
+            $log->save();
 
             if (env('APP_DEBUG')) {
                 echo ' [x] Сообщение: ', $msg->body, "\n";

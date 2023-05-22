@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\RabbitMQ;
+use App\Services\WorkingWithRabbitMQ;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -30,18 +30,21 @@ class MeasureResponseTime
             $controller_name = $controller_arr[0];
             $method_name = $controller_arr[1];
 
-            $execution_time = round(microtime(true) - LARAVEL_START, 2);
+            $ip_address = $request->ip();
+
+            $execution_time = microtime(true) - LARAVEL_START;
 
             $send_array = [
-                'date' => $today,
+                'create_date' => $today,
                 'method_name' => $method_name,
                 'controller_name' => $controller_name,
-                'execution_time' => $execution_time
+                'execution_time' => $execution_time,
+                'ip_address' => $ip_address
             ];
 
             $send_message = json_encode($send_array);
 
-            $rabbit_MQ = new RabbitMQ(env('RABBIT_MQ_QUEUE_NAME'));
+            $rabbit_MQ = new WorkingWithRabbitMQ(env('RABBIT_MQ_QUEUE_NAME'));
             $rabbit_MQ->send($send_message);
 
         }
