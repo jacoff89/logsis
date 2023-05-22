@@ -25,9 +25,9 @@ class DatabaseSeeder extends Seeder
 
         for ($i = 1; $i <= 10000; $i++) {
             DB::table('execution_time_logs')->insert([
-                'controller_name' => 'App\Http\Controllers\Controller' . rand(1, 50),
+                'controller_name' => 'App\Http\Controllers\Controller' . rand(1, 20),
                 'method_name' => 'method' . rand(1, 50),
-                'execution_time' => rand(1, 100)/10,
+                'execution_time' => rand(1, 1000)/100,
                 'create_date' => date("Y-m-d H:i:s"),
                 'ip_address' => '192.168.1.' . rand(1, 255)
             ]);

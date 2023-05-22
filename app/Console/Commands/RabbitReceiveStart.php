@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\RabbitMQ;
+use App\Services\WorkingWithRabbitMQ;
 use Illuminate\Console\Command;
 
 class RabbitReceiveStart extends Command
@@ -40,7 +40,7 @@ class RabbitReceiveStart extends Command
     {
         $queue_name = $this->argument('queue_name');
 
-        $rabbitMQ = new RabbitMQ($queue_name);
+        $rabbitMQ = new WorkingWithRabbitMQ($queue_name);
         $rabbitMQ->receive();
     }
 
