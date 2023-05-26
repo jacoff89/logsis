@@ -42,7 +42,6 @@ class Kernel extends HttpKernel
 
         'api' => [
             'throttle:api',
-            \App\Http\Middleware\SubstituteBindings::class,
         ],
     ];
 

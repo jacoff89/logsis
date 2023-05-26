@@ -25,7 +25,7 @@ class CreateExecutionTimeLogsTable extends Migration
             $table->float('execution_time', 4, 2);
             $table->dateTime('create_date');
             $table->ipAddress('ip_address');
-
+            $table->index(['create_date', 'method_name', 'controller_name', 'execution_time'], 'composite_index');
         });
     }
 

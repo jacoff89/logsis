@@ -23,23 +23,22 @@ class MeasureResponseTime
     {
         if (defined('LARAVEL_START') and $request instanceof Request) {
 
-            $today = date("Y-m-d H:i:s");
             $controller = app('request')->route()->getAction()['controller'];
 
-            $controller_arr = explode('@', $controller);
-            $controller_name = $controller_arr[0];
-            $method_name = $controller_arr[1];
+            $controllerArr = explode('@', $controller);
+            $controllerName = $controllerArr[0];
+            $methodName = $controllerArr[1];
 
-            $ip_address = $request->ip();
+            $ipAddress = $request->ip();
 
-            $execution_time = microtime(true) - LARAVEL_START;
+            $executionTime = microtime(true) - LARAVEL_START;
 
             $send_array = [
-                'create_date' => $today,
-                'method_name' => $method_name,
-                'controller_name' => $controller_name,
-                'execution_time' => $execution_time,
-                'ip_address' => $ip_address
+                'createDate' => date("Y-m-d H:i:s"),
+                'methodName' => $methodName,
+                'controllerName' => $controllerName,
+                'executionTime' => $executionTime,
+                'ipAddress' => $ipAddress
             ];
 
             $send_message = json_encode($send_array);
