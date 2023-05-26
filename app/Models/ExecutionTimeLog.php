@@ -22,9 +22,10 @@ class ExecutionTimeLog extends Model
      *
      * @param datetime  $startDate
      * @param datetime  $endDate
+     * @param int  $limit
      * @return Collection
      */
-    public function getLongMethods($startDate, $endDate)
+    public function getLongMethods($startDate, $endDate, $limit = 10)
     {
         return $this->select('controller_name', 'method_name')
             ->selectRaw('MAX(execution_time) as execution_time')
@@ -32,7 +33,7 @@ class ExecutionTimeLog extends Model
             ->where('create_date', '<=', $endDate)
             ->groupBy('controller_name', 'method_name')
             ->orderByDesc('execution_time')
-            ->limit(10)
+            ->limit($limit)
             ->get();
     }
 
@@ -42,9 +43,10 @@ class ExecutionTimeLog extends Model
      * @param datetime  $startDate
      * @param datetime  $endDate
      * @param bool  $isInTheList
+     * @param int  $limit
      * @return Collection
      */
-    public function getLongIps($startDate, $endDate, $isInTheList)
+    public function getLongIps($startDate, $endDate, $isInTheList, $limit = 10)
     {
         if ($isInTheList) {
             $extracting = function ($query) {
@@ -71,7 +73,7 @@ class ExecutionTimeLog extends Model
             ->where($extracting)
             ->groupBy('ip_address')
             ->orderByDesc('execution_time')
-            ->limit(10)
+            ->limit($limit)
             ->get();
     }
 }
