@@ -14,7 +14,7 @@ class ExecutionTimeLogSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 1; $i <= 10000; $i++) {
+        for ($i = 1; $i <= 1000; $i++) {
             $log = new ExecutionTimeLog();
             $log->controller_name = 'App\Http\Controllers\Controller' . rand(1, 20);
             $log->method_name = 'method' . rand(1, 50);

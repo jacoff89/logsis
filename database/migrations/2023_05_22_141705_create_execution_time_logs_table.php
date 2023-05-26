@@ -23,9 +23,8 @@ class CreateExecutionTimeLogsTable extends Migration
                 ->charset('utf8mb4')
                 ->collation('utf8mb4_unicode_ci');
             $table->float('execution_time', 4, 2);
-            $table->dateTime('create_date');
+            $table->dateTime('create_date')->index();
             $table->ipAddress('ip_address');
-            $table->index(['create_date', 'method_name', 'controller_name', 'execution_time'], 'composite_index');
         });
     }
 
