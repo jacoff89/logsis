@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\IpBlackList;
+use App\Models\ListOfIps;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
-class IpBlackListSeeder extends Seeder
+class ListOfIpsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,9 +14,12 @@ class IpBlackListSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 1; $i <= 80; $i++) {
-            $ip = new IpBlackList();
+        $list = ['black', 'white'];
+
+        for ($i = 1; $i <= 180; $i++) {
+            $ip = new ListOfIps();
             $ip->ip = '192.168.1.' . $i;
+            $ip->list = $list[rand(0,1)];
             $ip->save();
         }
     }

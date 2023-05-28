@@ -15,8 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            IpBlackListSeeder::class,
-            IpWhiteListSeeder::class,
+            ListOfIpsSeeder::class,
             ExecutionTimeLogSeeder::class
         ]);
     }

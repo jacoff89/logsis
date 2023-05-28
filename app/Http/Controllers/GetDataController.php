@@ -11,9 +11,9 @@ class GetDataController extends BaseController
 {
     private $executionTimeLog;
 
-    public function __construct()
+    public function __construct(ExecutionTimeLog $executionTimeLog)
     {
-        $this->executionTimeLog = new ExecutionTimeLog();
+        $this->executionTimeLog = $executionTimeLog;
     }
 
     public function getMethods(GetLongMethodsRequest $request)

@@ -57,8 +57,8 @@
                 <td>{{ item.ip_address }}</td>
                 <td>{{ item.execution_time }}</td>
                 <td>
-                    <span v-if="item.is_white_lists">Белый</span>
-                    <span v-else-if="item.is_black_lists">Черный</span>
+                    <span v-if="item.list == 'black'">Белый</span>
+                    <span v-else-if="item.list == 'white'">Черный</span>
                     <span v-else>Нет</span>
                 </td>
             </tr>

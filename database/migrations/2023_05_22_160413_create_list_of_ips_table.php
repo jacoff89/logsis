@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIpWhiteListsTable extends Migration
+class CreateListOfIpsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateIpWhiteListsTable extends Migration
      */
     public function up()
     {
-        Schema::create('ip_white_lists', function (Blueprint $table) {
+        Schema::create('list_of_ips', function (Blueprint $table) {
             $table->id();
             $table->ipAddress('ip')->unique();
+            $table->enum('list', ['black', 'white']);
         });
     }
 
@@ -26,6 +27,6 @@ class CreateIpWhiteListsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ip_white_lists');
+        Schema::dropIfExists('list_of_ips');
     }
 }
