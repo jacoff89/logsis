@@ -31,7 +31,7 @@ class MeasureResponseTime
 
         $send_message = json_encode($send_array);
 
-        $rabbit_MQ = new WorkingWithRabbitMQ(config('logsis.rabbit_mq_queue_name'));
+        $rabbit_MQ = new WorkingWithRabbitMQ(config('rabbit_mq.rabbit_mq_queue_name'));
         $rabbit_MQ->send($send_message);
 
         return $response;

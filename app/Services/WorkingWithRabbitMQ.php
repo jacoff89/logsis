@@ -17,10 +17,10 @@ class WorkingWithRabbitMQ
         $this->queueName = $queueName;
 
         $connection = new AMQPStreamConnection(
-            config('logsis.rabbit_mq_host'),
-            config('logsis.rabbit_mq_port'),
-            config('logsis.rabbit_mq_login'),
-            config('logsis.rabbit_mq_password')
+            config('rabbit_mq.rabbit_mq_host'),
+            config('rabbit_mq.rabbit_mq_port'),
+            config('rabbit_mq.rabbit_mq_login'),
+            config('rabbit_mq.rabbit_mq_password')
         );
 
         $this->channel = $connection->channel();
