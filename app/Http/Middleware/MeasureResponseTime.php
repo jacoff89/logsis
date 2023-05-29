@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Services\WorkingWithRabbitMQ;
+use Carbon\Carbon;
 use Closure;
 
 class MeasureResponseTime
@@ -22,7 +23,7 @@ class MeasureResponseTime
         $executionTime = microtime(true) - $startTime;
 
         $send_array = [
-            'createDate' => date("Y-m-d H:i:s"),
+            'createDate' => Carbon::now()->toDateTimeString(),
             'methodName' => $methodName,
             'controllerName' => $controllerName,
             'executionTime' => $executionTime,
