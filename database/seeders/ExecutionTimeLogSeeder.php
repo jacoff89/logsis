@@ -18,7 +18,7 @@ class ExecutionTimeLogSeeder extends Seeder
             $log = new ExecutionTimeLog();
             $log->controller_name = 'App\Http\Controllers\Controller' . rand(1, 20);
             $log->method_name = 'method' . rand(1, 50);
-            $log->execution_time = rand(1, 1000)/100;
+            $log->execution_time = rand(0.1, 10000)/1000;
             $log->create_date = date("Y-m-d H:i:s");
             $log->ip_address = '192.168.1.' . rand(1, 255);
             $log->save();

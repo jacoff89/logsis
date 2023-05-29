@@ -15,13 +15,10 @@ class MeasureResponseTime
         $response = $next($request);
 
         $controller = app('request')->route()->getAction()['controller'];
-
         $controllerArr = explode('@', $controller);
         $controllerName = $controllerArr[0];
         $methodName = $controllerArr[1];
-
         $ipAddress = $request->ip();
-
         $executionTime = microtime(true) - $startTime;
 
         $send_array = [
